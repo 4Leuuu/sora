@@ -1,4 +1,4 @@
-import { AnimeDetailSchema, animeSchema, responseSchema, type Anime, type AnimeDetail } from '@/schemas/anilist'
+import { AnimeDetailSchema, responseSchema, type Anime, type AnimeDetail } from '@/schemas/anilist'
 import { fetchGraphQL, fetchGraphQLDetail } from './anilist'
 
 const GET_TRENDING_ANIMES = `
