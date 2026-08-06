@@ -1,20 +1,35 @@
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import AnimeGrid from "./components/anime-grid";
+import Hero from "./components/hero"
+import Tagsbar from "./components/tagsbar"
+import { useTrendingAnimes } from "./hooks/animes"
+import Navbar from "./components/navbar";
+
 
 export function App() {
+  const [ searchTerm, setSearchTerm ] = useState<string>("");
+  const [ tagsTerm, setTagsTerm ] = useState<string>("");
+
+  const { data: response, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } = useTrendingAnimes(searchTerm, tagsTerm);
+  const animes = response?.pages.flatMap((page) => page.animes);
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
+    <main>
+      <Navbar onSearchChange={setSearchTerm} />
+      <div className="max-w-6xl mx-auto">  
+        <Tagsbar tagsTerm={tagsTerm} setTagsTerm={setTagsTerm} />
+        { (!searchTerm && !tagsTerm) && 
+          <Hero animes={animes!} isLoading={isLoading} />
+        }
+        <AnimeGrid 
+          animes={animes!} 
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          fetchNextPage={fetchNextPage}
+          isLoading={isLoading}
+        />
+      </div> 
+    </main>
   )
 }
 
