@@ -1,25 +1,29 @@
 import { useDetailAnimes } from "@/hooks/animes"
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { Clock, ExternalLink } from "lucide-react";
+import { Clock, ExternalLink, ArrowLeft } from "lucide-react";
+import { Link, useParams } from "react-router";
 
-interface AnimeDetailsProps {
-    mediaId: number
-}
-
-export default function AnimeDetails({ mediaId }: AnimeDetailsProps) {
-    const { data: media } = useDetailAnimes(mediaId);
+export default function AnimeDetails() {
+    const { id } = useParams();
+    const { data: media } = useDetailAnimes(+id!);
     const anime = media?.Media;
     const mainStudio = anime?.studios?.edges?.find((edge: any) => edge.isMain)?.node?.name || anime?.studios?.edges?.[0]?.node?.name;
     
     return (
-        <section className="w-full max-h-[85vh] overflow-y-auto">
+        <main className="max-w-6xl mx-auto">
             <div className="relative w-full">
                 <div 
                     className="bg-center bg-cover inset-0 opacity-40 h-48 w-full" 
                     style={{ backgroundImage: `url(${anime?.bannerImage || anime?.coverImage?.extraLarge})` }}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-background via-background/60 to-transparent h-48" />
+
+                <Link to="/">
+                    <Button variant="secondary" className="absolute z-10 top-5 left-5">
+                        < ArrowLeft />Voltar
+                    </Button>
+                </Link>
                 
                 <div className="relative px-6 -mt-16 flex gap-4 items-end mb-4">
                     { anime?.coverImage?.large && (
@@ -171,6 +175,6 @@ export default function AnimeDetails({ mediaId }: AnimeDetailsProps) {
                     </div>
                 )}
             </div>
-        </section>
+        </main>
     )
 }

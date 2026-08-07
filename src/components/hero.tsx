@@ -2,16 +2,19 @@ import type { Anime } from "@/schemas/anilist";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Skeleton } from "./ui/skeleton";
+import { useNavigate } from "react-router";
 
 export default function Hero({ animes, isLoading }: { animes: Anime[], isLoading: boolean}) {
     const anime = animes?.[0]
     const description = anime?.description || "Não há sinopse disponível."
+    const navigate = useNavigate();
+    
     return (
         <div className="mt-8 rounded-2xl border overflow-hidden shadow-2xl group mx-4">
             { isLoading ?
-                <Skeleton className="w-full h-94.75" />
+                <Skeleton className="w-full h-122" />
                 :
-                <div className="relative">
+                <div className="relative" onClick={() => navigate(`/media-details/${anime.id}`)}>
                     <div className="z-1 absolute bg-center bg-cover inset-0 opacity-30 group-hover:scale-105 duration-500" style={{ backgroundImage: `url(${anime?.bannerImage || anime?.coverImage?.extraLarge})` }}/>
                     <div className="z-2 absolute inset-0 bg-linear-to-t from-background to-transparent" />
                     

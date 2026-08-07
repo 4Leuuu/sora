@@ -22,6 +22,7 @@
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-intersection-observer": "^10.1.0",
+    "react-router": "^8.3.0",
     "shadcn": "^3.8.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4",

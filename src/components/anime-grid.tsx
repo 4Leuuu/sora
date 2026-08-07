@@ -8,13 +8,13 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "./ui/badge";
 import { useInView } from "react-intersection-observer";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
-import { Dialog, DialogContent } from "./ui/dialog";
-import AnimeDetails from "./anime-details";
+import { useNavigate } from "react-router";
 
 export default function AnimeGrid({ animes, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading }: { animes?: Anime[], hasNextPage: boolean, isFetchingNextPage: boolean, fetchNextPage: () => void, isLoading: boolean}) {
-    const [ mediaId, setMediaId ] = useState<number | null>(null);
+    const navigate = useNavigate();
+
     const { ref, inView } = useInView({
         threshold: 0
     })
@@ -23,7 +23,7 @@ export default function AnimeGrid({ animes, hasNextPage, isFetchingNextPage, fet
         if(inView && hasNextPage && !isFetchingNextPage) {
             fetchNextPage();
         }
-    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, navigate]);
 
     return (
         <section className="mt-8 px-4">
@@ -38,7 +38,7 @@ export default function AnimeGrid({ animes, hasNextPage, isFetchingNextPage, fet
                 ))
                     :
                     animes!.map((anime) => (
-                        <Card className="max-w-sm pt-0 border hover:border-primary duration-500 hover:-translate-y-2 hover:shadow-2xl" onClick={() => setMediaId(anime.id)}>
+                        <Card className="max-w-sm pt-0 border hover:border-primary duration-500 hover:-translate-y-2 hover:shadow-2xl" onClick={() => navigate(`/media-details/${anime.id}`)}>
                             <img
                                 src={anime.coverImage.extraLarge}
                                 alt={ anime.title.english || anime.title.romaji || "Anime sem nome"}
@@ -57,7 +57,7 @@ export default function AnimeGrid({ animes, hasNextPage, isFetchingNextPage, fet
                                     ))
                                 }
                             </CardFooter>
-                        </Card>  
+                        </Card>
                     ))
                 }
                 { isFetchingNextPage && 
@@ -66,19 +66,6 @@ export default function AnimeGrid({ animes, hasNextPage, isFetchingNextPage, fet
                     ))
                 }
             </div>
-
-            <Dialog 
-                open={mediaId !== null} 
-                onOpenChange={(open) => !open && setMediaId(null)}
-            >
-                <DialogContent 
-                    showCloseButton={false}
-                    className="p-0 overflow-hidden max-w-[50vw] max-h-[70vh] overflow-y-auto no-scrollbar"    
-                >
-                    {mediaId && <AnimeDetails mediaId={mediaId} />}
-                </DialogContent>
-            </Dialog>
-
             <div className="text-center text-sm text-muted-foreground mt-8 py-4" ref={ref}>
                 {isFetchingNextPage ? "Carregando..." : hasNextPage ? "Desça para carregar mais animes" : "Não há mais animes para mostrar"}
             </div>

@@ -8,17 +8,17 @@ import Navbar from "./components/navbar";
 
 export function App() {
   const [ searchTerm, setSearchTerm ] = useState<string>("");
-  const [ tagsTerm, setTagsTerm ] = useState<string>("");
+  const [ genresTerm, setGenresTerm ] = useState<string>("");
 
-  const { data: response, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } = useTrendingAnimes(searchTerm, tagsTerm);
+  const { data: response, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } = useTrendingAnimes(searchTerm, genresTerm);
   const animes = response?.pages.flatMap((page) => page.animes);
 
   return (
     <main>
       <Navbar onSearchChange={setSearchTerm} />
       <div className="max-w-6xl mx-auto">  
-        <Tagsbar tagsTerm={tagsTerm} setTagsTerm={setTagsTerm} />
-        { (!searchTerm && !tagsTerm) && 
+        <Tagsbar tagsTerm={genresTerm} setTagsTerm={setGenresTerm} />
+        { (!searchTerm && !genresTerm) && 
           <Hero animes={animes!} isLoading={isLoading} />
         }
         <AnimeGrid 
