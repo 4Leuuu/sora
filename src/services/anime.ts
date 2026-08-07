@@ -2,16 +2,16 @@ import { AnimeDetailSchema, responseSchema, type Anime, type AnimeDetail } from 
 import { fetchGraphQL, fetchGraphQLDetail } from './anilist'
 
 const GET_TRENDING_ANIMES = `
-  query ($page: Int, $search: String, $genre: String) {
+  query ($page: Int, $search: String, $genre: String, $sort: [MediaSort]) {
     Page(page: $page, perPage: 12) {
       pageInfo {
         hasNextPage
       }
       media(
         type: ANIME, 
-        sort: [TRENDING_DESC], 
         search: $search, 
         genre: $genre, 
+        sort: $sort
       ) {
         id
         title {
@@ -166,14 +166,17 @@ const GET_ANIME_BY_ID = `
   }
 `
 
-export async function getTrendingAnimes(page = 1, search?: string, genre?: string): Promise<{animes: Anime[], hasNextPage: boolean}> {
+export async function getTrendingAnimes(page = 1, search?: string, genre?: string, sort?: string): Promise<{animes: Anime[], hasNextPage: boolean}> {
+  console.log(sort)
   const variables = {
     page,
     search: search?.trim() ? search.trim() : undefined,
     genre: genre?.trim() ? genre.trim() : undefined,
+    sort: sort?.trim() ? sort.trim() : undefined,
   }
 
   const data = await fetchGraphQL(GET_TRENDING_ANIMES, variables);
+  console.log(data, sort)
   const parsed = responseSchema.parse(data);
   return {
     animes: parsed.Page.media,
